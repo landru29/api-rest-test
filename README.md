@@ -25,6 +25,8 @@ cmake --build build
 ./build/RestfulApi
 ```
 
+Then browse http://localhost:8080
+
 ## Developping
 
 The project is configured to be used with VSCode and devcontainers (docker must be installed first).
