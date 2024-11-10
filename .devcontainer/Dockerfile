@@ -3,7 +3,10 @@ FROM mcr.microsoft.com/vscode/devcontainers/cpp:1.2.5-bullseye
 
 
 RUN sudo apt update && sudo apt install -y \
-        zsh
+        zsh \
+        cmake \
+        build-essential \
+        gdb
 
 RUN sudo apt remove libboost-dev && sudo apt autoremove
 
@@ -18,4 +21,20 @@ RUN mkdir -p /tmp/boost \
     && cd /tmp/boost \
     && ./bootstrap.sh --prefix=/usr/ \
     && ./b2 \
-    && sudo ./b2 install
+    && sudo ./b2 install \
+    && cd /tmp \
+    && rm -rf /tmp/boost \
+    && rm -f /tmp/boost.tar.gz
+
+# install nlohmann/json
+RUN mkdir -p /tmp/json \
+    && cd /tmp \
+    && curl -L -o /tmp/json.tar.gz https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz \
+    && tar xf /tmp/json.tar.gz --strip-components=1 -C /tmp/json \
+    && cd /tmp/json \
+    && cmake -B ./build . \
+    && cmake --build build \
+    && sudo cmake --build build --target install \
+    && cd /tmp \
+    && rm -rf /tmp/json \
+    && rm -f /tmp/json.tar.gz
